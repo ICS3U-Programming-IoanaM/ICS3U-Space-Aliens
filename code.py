@@ -5,8 +5,8 @@
 # Date: Jan. 10, 2022
 
 
-import ugame
 import stage
+import ugame
 
 
 # main game_scene
@@ -23,6 +23,7 @@ def game_scene():
     # game loop
     while True:
         pass
+
 
 if __name__ == "__main__":
     game_scene()
