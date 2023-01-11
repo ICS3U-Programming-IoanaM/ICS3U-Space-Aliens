@@ -16,7 +16,7 @@ def game_scene():
     background = stage.Grid(image_bank_background)
 
     # displays the background ands it to a layer
-    game - stage.Stage(ugame.display, 60)
+    game = stage.Stage(ugame.display, 60)
     game.layers = [background]
     game.render_block()
 
