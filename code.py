@@ -5,12 +5,20 @@
 # Date: Jan. 10, 2022
 
 
+import ugame
+import stage
 
 
 # main game_scene
 def game_scene():
-    print("\n\n\n")
-    print("Hello, World!")
+    # imports background image and allows it to be displayed
+    image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
+    background = stage.Grid(image_bank_background)
+
+    # displays the background ands it to a layer
+    game - stage.Stage(ugame.display, 60)
+    game.layers = [background]
+    game.render_block()
 
     # game loop
     while True:
