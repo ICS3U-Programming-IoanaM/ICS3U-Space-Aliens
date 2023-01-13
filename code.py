@@ -26,7 +26,7 @@ def game_scene():
 
     # game loop
     while True:
-    # get user input
+        # get user input
         keys = ugame.buttons.get_pressed()
 
         if keys & ugame.K_X:
