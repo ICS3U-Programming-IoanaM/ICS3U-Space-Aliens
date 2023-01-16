@@ -6,10 +6,9 @@
 # space aliens game
 
 
+import constants
 import stage
 import ugame
-
-import constants
 
 
 # main game_scene
