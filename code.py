@@ -19,7 +19,9 @@ def game_scene():
     image_bank_sprites = stage.Bank.from_bmp16("Assets/space_aliens.bmp")
 
     # sets the image(s) in a grid
-    background = stage.Grid(image_bank_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y)
+    background = stage.Grid(
+        image_bank_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y
+    )
     ship = stage.Sprite(image_bank_sprites, 5, 75, 66)
 
     # creates a stage for the background to be displayed
