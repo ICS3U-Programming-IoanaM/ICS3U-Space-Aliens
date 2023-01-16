@@ -3,25 +3,31 @@
 # Created By: Ioana Marinescu
 #
 # Date: Jan. 10, 2022
+# space aliens game
 
 
 import stage
 import ugame
 
+import constants
+
 
 # main game_scene
 def game_scene():
-    # imports image
-    image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
-    image_bank_sprites = stage.Bank.from_bmp16("space_aliens.bmp")
+    # imports all images needed
+    image_bank_background = stage.Bank.from_bmp16("Assets/space_aliens_background.bmp")
+    image_bank_sprites = stage.Bank.from_bmp16("Assets/space_aliens.bmp")
 
     # sets the image(s) in a grid
-    background = stage.Grid(image_bank_background, 10, 8)
+    background = stage.Grid(image_bank_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y)
     ship = stage.Sprite(image_bank_sprites, 5, 75, 66)
 
-    # displays the layers
-    game = stage.Stage(ugame.display, 60)
+    # creates a stage for the background to be displayed
+    # and sets the frame rate to 60fps
+    game = stage.Stage(ugame.display, constants.FPS)
+    # sets layers, items show up in order
     game.layers = [ship] + [background]
+    # renders background + original location of the sprite
     game.render_block()
 
     # game loop
@@ -29,22 +35,38 @@ def game_scene():
         # get user input
         keys = ugame.buttons.get_pressed()
 
+        # A button pressed
         if keys & ugame.K_X:
-            print("A")
+            pass
+        # Button pressed
         if keys & ugame.K_O:
-            print("B")
+            pass
+        # start button pressed
         if keys & ugame.K_START:
-            print("Start")
+            pass
+        # select button pressed
         if keys & ugame.K_SELECT:
-            print("select")
+            pass
         if keys & ugame.K_RIGHT:
-            ship.move(ship.x + 1, ship.y)
+            # moves ship
+            if ship.x <= constants.SCREEN_X:
+                ship.move(ship.x + 1, ship.y)
+            # sets boundaries for the right side
+            else:
+                ship.move(constants.SCREEN_X, ship.y)
+
         if keys & ugame.K_LEFT:
-            ship.move(ship.x - 1, ship.y)
+            # moves ship
+            if ship.x >= 0:
+                ship.move(ship.x - 1, ship.y)
+            # sets boundaries for the left side
+            else:
+                ship.move(0, ship.y)
+
         if keys & ugame.K_UP:
-            ship.move(ship.x, ship.y - 1)
+            pass
         if keys & ugame.K_DOWN:
-            ship.move(ship.x, ship.y + 1)
+            pass
 
         # update game logic
 
