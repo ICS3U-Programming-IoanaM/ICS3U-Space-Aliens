@@ -6,8 +6,8 @@
 # space aliens game
 
 
-import time
 import random
+import time
 
 import constants
 import stage
