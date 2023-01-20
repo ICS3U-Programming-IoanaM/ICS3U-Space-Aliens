@@ -153,6 +153,7 @@ def game_scene():
 
     # get sound ready
     pew_sound = open("Assets/pew.wav", "rb")
+    boom_sound = open("Assets/boom.wav", "rb")
     sound = ugame.audio
     sound.stop()
     sound.mute(False)
@@ -280,6 +281,34 @@ def game_scene():
                         constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                     )
                     show_alien()
+
+        # checks if any collisions occurred between lasers and aliens each frame
+        for laser_num in range(len(lasers)):
+            if lasers[laser_num].x > 0:
+                for alien_num in range(len(aliens)):
+                    if aliens[alien_num].x > 0:
+                        if stage.collide(
+                            lasers[laser_num].x + 6,
+                            lasers[laser_num].y + 2,
+                            lasers[laser_num].x + 11,
+                            lasers[laser_num].y + 12,
+                            aliens[alien_num].x + 1,
+                            aliens[alien_num].y,
+                            aliens[alien_num].x + 15,
+                            aliens[alien_num].y + 15,
+                        ):
+                            # you hit an alien
+                            aliens[alien_num].move(
+                                constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                            )
+                            lasers[laser_num].move(
+                                constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                            )
+                            sound.stop()
+                            sound.play(boom_sound)
+                            show_alien()
+                            show_alien()
+                            score += 1
 
         # redraws the Sprites
         game.render_sprites(lasers + [ship] + aliens)
