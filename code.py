@@ -6,11 +6,11 @@
 # space aliens game
 
 
-import constants
-
 import random
-import supervisor
+# import supervisor
 import time
+
+import constants
 
 import stage
 import ugame
