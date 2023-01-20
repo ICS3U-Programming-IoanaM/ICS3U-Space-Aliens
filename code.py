@@ -148,7 +148,7 @@ def game_scene():
     # random background
     for x_location in range(constants.SCREEN_GRID_X):
         for y_location in range(constants.SCREEN_GRID_Y):
-            tile_picked = random.randint(1, 3)
+            tile_picked = random.randint(0, 3)
             background.tile(x_location, y_location, tile_picked)
 
     # sprites
@@ -253,4 +253,4 @@ def game_scene():
 
 
 if __name__ == "__main__":
-    menu_scene()
+    splash_scene()
