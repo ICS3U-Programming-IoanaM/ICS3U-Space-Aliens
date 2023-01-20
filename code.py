@@ -87,7 +87,7 @@ def menu_scene():
         width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
     )
     text1.move(20, 10)
-    text1.text("MT Game Studios")
+    text1.text("THIS IS A GAME")
     text.append(text1)
 
     text2 = stage.Text(
@@ -125,6 +125,22 @@ def menu_scene():
 
 # main game_scene
 def game_scene():
+    # takes 1 alien from off the screen and displays it
+    def show_alien():
+        for alien_num in range(len(aliens)):
+            if aliens[alien_num].x < 0:
+                aliens[alien_num].move(
+                    random.randint(
+                        0 + constants.SPRITE_SIZE,
+                        constants.SCREEN_X - constants.SPRITE_SIZE,
+                    ),
+                    constants.OFF_TOP_SCREEN,
+                )
+                break
+
+    # for score
+    score = 0
+
     # imports all images needed
     image_bank_background = stage.Bank.from_bmp16("Assets/space_aliens_background.bmp")
     image_bank_sprites = stage.Bank.from_bmp16("Assets/space_aliens.bmp")
@@ -148,19 +164,24 @@ def game_scene():
     # random background
     for x_location in range(constants.SCREEN_GRID_X):
         for y_location in range(constants.SCREEN_GRID_Y):
-            tile_picked = random.randint(0, 3)
+            tile_picked = random.randint(1, 3)
             background.tile(x_location, y_location, tile_picked)
 
     # sprites
     ship = stage.Sprite(
         image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE)
     )
-    alien = stage.Sprite(
-        image_bank_sprites,
-        9,
-        int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
-        16,
-    )
+    aliens = []
+    for alien_number in range(constants.TOTAL_NUMBER_OF_ALIENS):
+        a_single_alien = stage.Sprite(
+            image_bank_sprites,
+            9,
+            int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
+            16,
+        )
+        aliens.append(a_single_alien)
+    # place 1 alien on the screen
+    show_alien()
 
     # creates multiple lasers for when we shoot
     lasers = []
@@ -174,7 +195,7 @@ def game_scene():
     # and sets the frame rate to 60fps
     game = stage.Stage(ugame.display, constants.FPS)
     # sets layers, items show up in order
-    game.layers = lasers + [ship] + [alien] + [background]
+    game.layers = lasers + [ship] + aliens + [background]
     # renders background + original location of the sprite
     game.render_block()
 
@@ -227,7 +248,7 @@ def game_scene():
             pass
 
         # updates game logic
-        # fores a laser if A button is pressed
+        # fires a laser if A button is pressed
         if a_button == constants.button_state["button_just_pressed"]:
             for laser_number in range(len(lasers)):
                 if lasers[laser_number].x < 0:
@@ -247,8 +268,21 @@ def game_scene():
                         constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                     )
 
+        # each frame move the aliens
+        for alien_number in range(len(aliens)):
+            if aliens[alien_number].x > 0:
+                aliens[alien_number].move(
+                    aliens[alien_number].x,
+                    aliens[alien_number].y + constants.ALIEN_SPEED,
+                )
+                if aliens[alien_number].y > constants.SCREEN_Y:
+                    aliens[alien_number].move(
+                        constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                    )
+                    show_alien()
+
         # redraws the Sprites
-        game.render_sprites(lasers + [ship] + [alien])
+        game.render_sprites(lasers + [ship] + aliens)
         game.tick()
 
 
