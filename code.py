@@ -7,11 +7,11 @@
 
 
 import random
+import supervisor
 import time
 
 import constants
 import stage
-import supervisor
 import ugame
 
 
@@ -159,9 +159,9 @@ def game_scene():
     start_button = constants.button_state["button_up"]
 
     # get sound ready
-    pew_sound = open("Assets/pew.wav", "rb")
+    pew_sound = open("Assets/twinkle.wav", "rb")
     boom_sound = open("Assets/boom.wav", "rb")
-    crash_sound = open("Assets/crash.wav", "rb")
+    crash_sound = open("Assets/scream.wav", "rb")
     sound = ugame.audio
     sound.stop()
     sound.mute(False)
@@ -177,9 +177,12 @@ def game_scene():
             background.tile(x_location, y_location, tile_picked)
 
     # sprites
+    # dev sprite
     ship = stage.Sprite(
         image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE)
     )
+    # bad reviews sprites
+    # creates 5 sprites and places them off the screen
     aliens = []
     for alien_number in range(constants.TOTAL_NUMBER_OF_ALIENS):
         a_single_alien = stage.Sprite(
@@ -191,6 +194,9 @@ def game_scene():
         aliens.append(a_single_alien)
     # place 1 alien on the screen
     show_alien()
+
+    # creates the good review sprite
+    good_review = stage.Sprite(image_bank_sprites, 8, 50, 16)
 
     # creates multiple lasers for when we shoot
     lasers = []
@@ -204,7 +210,7 @@ def game_scene():
     # and sets the frame rate to 60fps
     game = stage.Stage(ugame.display, constants.FPS)
     # sets layers, items show up in order
-    game.layers = [score_text] + lasers + [ship] + aliens + [background]
+    game.layers = [score_text] + lasers + [ship] + aliens + [good_review] + [background]
     # renders background + original location of the sprite
     game.render_block()
 
@@ -277,6 +283,22 @@ def game_scene():
                         constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                     )
 
+        # each frame move the good review
+        if good_review.x > 0:
+            good_review.move(
+                good_review.x,
+                good_review.y + constants.ALIEN_SPEED,
+            )
+            # if the good review goes off screen go off the screen
+            if good_review.y > constants.SCREEN_Y:
+                good_review.move(
+                    random.randint(
+                        0 + constants.SPRITE_SIZE,
+                        constants.SCREEN_X - constants.SPRITE_SIZE,
+                    ),
+                    constants.OFF_TOP_SCREEN,
+                )
+
         # each frame move the aliens down
         for alien_number in range(len(aliens)):
             if aliens[alien_number].x > 0:
@@ -297,6 +319,26 @@ def game_scene():
                     score_text.cursor(0, 0)
                     score_text.move(1, 1)
                     score_text.text("Score: {0}".format(score))
+
+        # checks for collisions between laser and good review
+        for laser_num in range(len(lasers)):
+            if lasers[laser_num].x > 0:
+                if good_review.x > 0:
+                    if stage.collide(
+                        lasers[laser_num].x + 6,
+                        lasers[laser_num].y + 2,
+                        lasers[laser_num].x + 11,
+                        lasers[laser_num].y + 12,
+                        good_review.x + 1,
+                        good_review.y,
+                        good_review.x + 15,
+                        good_review.y + 15,
+                    ):
+                        # laser hit good review
+                        sound.stop()
+                        sound.play(crash_sound)
+                        time.sleep(3.0)
+                        game_over_scene(score)
 
         # checks if any collisions occurred between lasers and aliens each frame
         for laser_num in range(len(lasers)):
@@ -330,6 +372,32 @@ def game_scene():
                             score_text.move(1, 1)
                             score_text.text("Score: {0}".format(score))
 
+        # checks for collision between ship and good review
+        if good_review.x > 0:
+            if stage.collide(
+                good_review.x + 1,
+                good_review.y,
+                good_review.x + 15,
+                good_review.y + 15,
+                ship.x,
+                ship.y,
+                ship.x + 15,
+                ship.y + 15,
+            ):
+                # good review hit the ship
+                good_review.move(
+                    random.randint(
+                        0 + constants.SPRITE_SIZE,
+                        constants.SCREEN_X - constants.SPRITE_SIZE,
+                    ),
+                    constants.OFF_TOP_SCREEN,
+                )
+                score += 5
+                score_text.clear()
+                score_text.cursor(0, 0)
+                score_text.move(1, 1)
+                score_text.text("Score: {0}".format(score))
+
         # checks if alien crashes with ship
         for alien_num in range(len(aliens)):
             if aliens[alien_num].x > 0:
@@ -350,7 +418,7 @@ def game_scene():
                     game_over_scene(score)
 
         # redraws the Sprites
-        game.render_sprites(lasers + [ship] + aliens)
+        game.render_sprites(lasers + [ship] + aliens + [good_review])
         game.tick()
 
 
